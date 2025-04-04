@@ -1,59 +1,119 @@
-# AngularNgxEnvBuilder
+# 🚀 Angular NGX Env Builder with Runtime Configuration
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
+[![Angular](https://img.shields.io/badge/Angular-19.2.0-DD0031?logo=angular&logoColor=white)](https://angular.io/)
+[![NGX-ENV](https://img.shields.io/badge/NGX_ENV-19.0.4-8a2be2)](https://github.com/chihab/ngx-env)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Development server
+## 📋 Overview
 
-To start a local development server, run:
+This project demonstrates how to use `@ngx-env/builder` with runtime configuration enabled in an Angular 19 application. The runtime option allows environment variables to be modified after the application is built, making it ideal for containerized deployments.
 
-```bash
-ng serve
+## ✨ Features
+
+- 🔄 **Runtime Environment Variables** - Change env vars without rebuilding
+- 🐳 **Docker Integration** - Ready for containerized deployments
+- 🌐 **Nginx Configuration** - Optimized for SPA with proper caching controls
+- 🧩 **Environment Typing** - Fully typed environment variables
+- 📦 **Latest Angular** - Built with Angular 19
+
+## 🛠️ Technical Details
+
+### Environment Configuration
+
+The project uses `@ngx-env/builder` with runtime mode enabled in the Angular configuration:
+
+```json
+"ngxEnv": {
+  "prefix": "NG_APP_",
+  "runtime": true
+}
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+This generates a `ngx-env.js` file at build time that can be replaced at runtime.
 
-## Code scaffolding
+### Environment Variables
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The following environment variables are configured:
 
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NG_APP_ENV` | Current environment | `development`, `production` |
+| `NG_APP_API_URL` | API endpoint URL | `https://api.placeholder.test` |
+| `NG_APP_FEATURE_FLAG` | Feature toggle | `true`, `false` |
+
+### Docker Setup
+
+The project includes:
+- `Dockerfile` for building and serving the application
+- `docker-compose.yml` for easy deployment
+- Custom `nginx.conf` with proper caching headers for the runtime environment file
+
+## 🚦 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- Docker and Docker Compose (optional, for containerized deployment)
+
+### Development
+
+1. Clone the repository
 ```bash
-ng generate component component-name
+git clone <repository-url>
+cd angular-ngx-env-builder
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+2. Install dependencies
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
-
+3. Start the development server
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+4. Open your browser to `http://localhost:4200`
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Build for Production
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+### Docker Deployment
 
-For end-to-end (e2e) testing, run:
-
+1. Build and start the Docker container
 ```bash
-ng e2e
+docker-compose up -d
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+2. Access the application at `http://localhost:4200`
 
-## Additional Resources
+3. To update environment variables, modify the `config/ngx-env.js` file
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🧪 Testing
+
+Run unit tests with:
+```bash
+npm test
+```
+
+## 📝 How Runtime Configuration Works
+
+1. At build time, `@ngx-env/builder` creates a `ngx-env.js` file containing environment variables
+2. During Docker deployment, this file is volume-mounted from `./config/ngx-env.js`
+3. The nginx configuration ensures this file is never cached
+4. Changes to `config/ngx-env.js` take effect immediately on page refresh
+
+## 📚 Resources
+
+- [NGX-ENV Documentation](https://github.com/chihab/ngx-env)
+- [Angular Documentation](https://angular.dev/)
+- [Docker Documentation](https://docs.docker.com/)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
