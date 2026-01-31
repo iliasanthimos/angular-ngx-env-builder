@@ -6,11 +6,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - '4200:80'
-    volumes:
-      - ./config/ngx-env.js:/usr/share/nginx/html/ngx-env.js:ro
+    env_file:
+      - .env
     restart: unless-stopped
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:4200/index.html']
+      test: ['CMD', 'curl', '-f', 'http://localhost:80/index.html']
       interval: 30s
       timeout: 3s
       retries: 3

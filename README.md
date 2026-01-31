@@ -11,11 +11,12 @@ This project demonstrates how to use `@ngx-env/builder` with runtime configurati
 
 ## ✨ Features
 
-- 🔄 **Runtime Environment Variables** - Change env vars without rebuilding
-- 🐳 **Docker Integration** - Ready for containerized deployments
+- 🔄 **Runtime Environment Variables** - Change env vars without rebuilding using envsubst
+- 🐳 **Docker Integration** - Ready for containerized deployments with environment variable support
 - 🌐 **Nginx Configuration** - Optimized for SPA with proper caching controls
-- 🧩 **Environment Typing** - Fully typed environment variables
+- 🧩 **Environment Typing** - Fully typed environment variables with safe access helpers
 - 📦 **Latest Angular** - Built with Angular 19
+- 🛡️ **Safe Environment Access** - Helper function for safe environment variable access with fallbacks
 
 ## 🛠️ Technical Details
 
@@ -45,8 +46,9 @@ The following environment variables are configured:
 ### Docker Setup
 
 The project includes:
-- `Dockerfile` for building and serving the application
-- `docker-compose.yml` for easy deployment
+- `Dockerfile` for building and serving the application with envsubst for runtime environment generation
+- `docker-compose.yml` for easy deployment with environment variable support
+- `environment.conf` template file with environment variable placeholders
 - Custom `nginx.conf` with proper caching headers for the runtime environment file
 
 ## 🚦 Getting Started
@@ -85,14 +87,24 @@ npm run build
 
 ### Docker Deployment
 
-1. Build and start the Docker container
+1. Ensure your `.env` file contains the required environment variables:
+```bash
+NG_APP_ENV=production
+NG_APP_API_URL=https://api.example.com
+NG_APP_FEATURE_FLAG=true
+```
+
+2. Build and start the Docker container
 ```bash
 docker-compose up -d
 ```
 
-2. Access the application at `http://localhost:4200`
+3. Access the application at `http://localhost:4200`
 
-3. To update environment variables, modify the `config/ngx-env.js` file
+4. To update environment variables:
+   - Modify the `.env` file
+   - Restart the container: `docker-compose restart`
+   - The `ngx-env.js` file will be regenerated automatically using `envsubst`
 
 ## 🧪 Testing
 
@@ -104,9 +116,12 @@ npm test
 ## 📝 How Runtime Configuration Works
 
 1. At build time, `@ngx-env/builder` creates a `ngx-env.js` file containing environment variables
-2. During Docker deployment, this file is volume-mounted from `./config/ngx-env.js`
-3. The nginx configuration ensures this file is never cached
-4. Changes to `config/ngx-env.js` take effect immediately on page refresh
+2. The Dockerfile fixes the relative path to an absolute path (`/ngx-env.js`) in `index.html`
+3. The `environment.conf` template file contains placeholders (e.g., `${NG_APP_ENV}`) for environment variables
+4. At container startup, `envsubst` processes the template and generates the final `ngx-env.js` file from environment variables
+5. The nginx configuration ensures this file is never cached
+6. Environment variables are accessed via the `getEnvValue()` helper function in `src/environments/environment.ts`
+7. Changes to environment variables require a container restart to take effect
 
 ## 📚 Resources
 
